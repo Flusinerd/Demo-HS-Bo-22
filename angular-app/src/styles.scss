@@ -1,0 +1,33 @@
+/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+
+$fontColor: #fafafa;
+$backgroundColor: #303030;
+
+body {
+  height: 100%;
+  background-color: $backgroundColor;
+  color: $fontColor;
+  margin: 0;
+  padding: 1rem 2rem;
+  font-family: "Montserrat", sans-serif;
+}
+
+input {
+  $inputColor: adjust-color(
+    $color: $backgroundColor,
+    $lightness: 10%,
+  );
+  background: $inputColor;
+  border: 1px solid adjust-color($inputColor, $lightness: 10%);
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  color: $fontColor;
+
+  transition: all 0.2s ease-in-out;
+
+  &:focus {
+    outline: none;
+    border-color: adjust-color($inputColor, $lightness: 30%);
+  }
+}
