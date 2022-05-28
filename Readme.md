@@ -21,7 +21,7 @@
   - [Nestjs](#nestjs)
     - [Einrichten des projekts](#einrichten-des-projekts)
     - [Erstellen einer Resource](#erstellen-einer-resource)
-    - [Anlegen des hero.dto und mock heroes](#anlegen-des-herodto-und-mock-heroes)
+    - [Anlegen der hero entity und mock heroes](#anlegen-der-hero-entity-und-mock-heroes)
       - [SOC und DB](#soc-und-db)
     - [Anpassen Angular](#anpassen-angular)
 
@@ -87,7 +87,6 @@ Schön machen
 styles.scss
 
 ```scss
-/* You can add global styles to this file, and also import other style files */
 /* You can add global styles to this file, and also import other style files */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
 
@@ -378,7 +377,7 @@ heroes.component.html
     </li>
   </ul>
 
-  <div *ngIf="selectedHero">
+  <div *ngIf="selectedHero !== undefined">
     <h2>{{ selectedHero.name | uppercase }} Details</h2>
     <div>Id: {{ selectedHero.id }}</div>
     <div>
@@ -518,17 +517,21 @@ GET /heroes
 
 zur Verfügung stellen die uns die heroes zurückgibt
 
-### Anlegen des hero.dto und mock heroes
+### Anlegen der hero entity und mock heroes
+
+hero.entity.ts
 
 ```ts
-export interface Hero {
+export class Hero {
   id: number;
   name: string;
 }
 ```
 
+hero-mock.ts
+
 ```ts
-import { Hero } from "./hero.dto";
+import { Hero } from "./entities/hero.entity";
 
 export const HEROES: Hero[] = [
   { id: 12, name: "Dr. Nice" },
@@ -580,7 +583,7 @@ TypeOrmModule.forRoot({
   username: 'hsbo',
   password: 'password123',
   database: 'heroes',
-  entities: [],
+  autoLoadEntities: true,
   synchronize: true,
 }),
 ```
@@ -590,8 +593,8 @@ Erstellen der Entität
 ```ts
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: "Heroes" })
-export class HeroEntity {
+@Entity()
+export class Hero {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -603,15 +606,15 @@ export class HeroEntity {
 Import des TypeOrmModule
 
 ```ts
-imports: [TypeOrmModule.forFeature([HeroEntity])],
+imports: [TypeOrmModule.forFeature([Hero])],
 ```
 
 Anpassen Service:
 
 ```ts
 constructor(
-  @InjectRepository(HeroEntity)
-  private readonly repo: Repository<HeroEntity>
+  @InjectRepository(Hero)
+  private readonly repo: Repository<Hero>
 ) {}
 
 getHeroes(): Promise<Hero[]> {
